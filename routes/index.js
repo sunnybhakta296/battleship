@@ -8,4 +8,6 @@ router.get("/hello", (req, res, next) => {
 
 router.post("/create", gameController.createGame);
 
+router.post('/deploy/:gameId', gameController.deploy);
+
 module.exports = router;
