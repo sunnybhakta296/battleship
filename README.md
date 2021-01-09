@@ -42,3 +42,7 @@ Attack ships
       "row": 8,
       "column": 4
     }'
+
+### GET /games/status/gameId    
+Get game status
+curl -X http://localhost:4000/game/status/:gameId

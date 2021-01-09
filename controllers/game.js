@@ -39,4 +39,13 @@ module.exports = {
       next(error);
     }
   },
+  async status(req, res, next) {
+    try {
+      const game = await battleship.getGameInfo(req.params.gameId);
+      return res.json(game);
+    } catch (error) {
+      error.status = 400;
+      next(error);
+    }
+  },
 };

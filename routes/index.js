@@ -12,4 +12,6 @@ router.post('/deploy/:gameId', gameController.deploy);
 
 router.post('/attack/:gameId', gameController.attack);
 
+router.get('/status/:gameId', gameController.status);
+
 module.exports = router;
