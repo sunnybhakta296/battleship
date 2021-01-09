@@ -20,9 +20,12 @@ const historySchema = new Schema(
       ref: "Game",
       required: true,
     },
-    row: { type: Number },
-    column: { type: Number },
-    isVertical: { type: Boolean },
+    payload: {
+      row: { type: Number },
+      column: { type: Number },
+      isVertical: { type: Boolean },
+      ship: {type: String}
+    },
     date: { type: Date, required: true },
   },
   {

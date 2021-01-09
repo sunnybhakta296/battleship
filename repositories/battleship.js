@@ -1,6 +1,6 @@
 const _ = require("lodash");
 const Game = require("../models/game");
-const History = require("../models/history");
+const history = require("../repositories/history");
 const Constants = require("../constants");
 
 module.exports = battleship = {
@@ -89,13 +89,12 @@ module.exports = battleship = {
       });
 
     const gameInfo = await game.save();
-    const history = new History({
+
+    history.save({
       gameId: gameInfo._id,
       action: Constants.create,
-      date: new Date(),
     });
 
-    await history.save();
     return gameInfo;
   },
   async deploy(gameId, options) {
@@ -181,6 +180,18 @@ module.exports = battleship = {
     game.adjacentGrids = game.adjacentGrids.concat(adjacentGrids);
     ship.amount -= 1;
     game.markModified("defender");
+
+    history.save({
+      gameId: game._id,
+      action: Constants.deploy,
+      payload: {
+        row: options.row,
+        column: options.column,
+        ship: options.ship,
+        isVertical: options.isVertical
+      }
+    });
+
     return game.save();
-  }
+  },
 };
