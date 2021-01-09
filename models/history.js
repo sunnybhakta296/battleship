@@ -1,11 +1,12 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const Constants = require("../constants");
-const actionEnum = [
-  Constants.create,
-  Constants.deploy,
-  Constants.deploy,
+const actionEnum = [Constants.create, Constants.deploy, Constants.attack];
+const resultEnum = [
   Constants.win,
+  Constants.hit,
+  Constants.miss,
+  Constants.sank,
 ];
 
 const historySchema = new Schema(
@@ -24,7 +25,11 @@ const historySchema = new Schema(
       row: { type: Number },
       column: { type: Number },
       isVertical: { type: Boolean },
-      ship: {type: String}
+      ship: { type: String },
+    },
+    result: {
+      type: String,
+      enum: resultEnum,
     },
     date: { type: Date, required: true },
   },

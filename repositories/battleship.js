@@ -5,7 +5,7 @@ const Constants = require("../constants");
 
 module.exports = battleship = {
   getGameInfo(gameId) {
-    return Game.findOne({ gameId });
+    return Game.findOne({ _id: gameId});
   },
   toGrid(row, column) {
     return 10 * (row - 1) + column;
@@ -193,5 +193,63 @@ module.exports = battleship = {
     });
 
     return game.save();
+  },
+  async attack(gameId, options) {
+    let message, result;
+    const game = await Game.findOne({ _id: gameId });
+    if (!game) {
+      return Promise.reject(new Error(`Game with ${gameId} not exist`));
+    }
+    const grid = battleship.toGrid(options.row, options.column);
+    const attacker = game.attacker;
+    const defender = game.defender;
+    if (attacker.hitGrids.length === game.occupiedGrids.length) {
+      return Promise.resolve("game end");
+    }
+    if (attacker.missGrids.includes(grid) || attacker.hitGrids.includes(grid)) {
+      return Promise.resolve("already hit");
+    }
+    if (game.occupiedGrids.includes(grid)) {
+      message = "Hit";
+      result = Constants.hit;
+      attacker.hitGrids.push(grid);
+      const found = _.find(defender.placements, (item) => {
+        return item.grids.indexOf(grid) > -1;
+      });
+
+      // remove grids was hit
+      const index = found.grids.indexOf(grid);
+      found.grids.splice(index, 1);
+      if (found.grids.length === 0) {
+        result = Constants.sank;
+        message = `You just sank the ${found.ship}`;
+      }
+    } else {
+      attacker.missGrids.push(grid);
+      message = "Miss";
+      result = Constants.miss;
+    }
+
+    if (attacker.hitGrids.length === game.occupiedGrids.length) {
+      const totalMoves = attacker.missGrids.length + attacker.hitGrids.length;
+      message = `Win ! You completed the game in ${totalMoves} moves. ${attacker.missGrids.length} missed shots`;
+      result = Constants.win;
+    }
+    game.markModified("defender");
+    game.markModified("attacker");
+
+    await game.save();
+
+    history.save({
+      gameId: game._id,
+      action: Constants.attack,
+      payload: {
+        row: options.row,
+        column: options.column
+      },
+      result
+    });
+
+    return Promise.resolve(message);
   },
 };

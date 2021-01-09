@@ -58,7 +58,6 @@ describe('Battleship lib', () => {
       expect(error).exist
     })
 
-    // view test/all-deployed.png
     it('should return error when all ships have been deployed', async () => {
       let error
       const options = [
@@ -129,6 +128,36 @@ describe('Battleship lib', () => {
         expect(deployError.message).eql('all ships has been deployed')
       } 
       expect(error).exist
+    })
+
+    describe('#attack()', () => {
+      it('should return `Miss` and save to missGrids', async() => {
+        const game = await battleship.createGame()
+        const options = {
+          row: 1,
+          column: 6,
+          ship: 'battleship'
+        }
+        await battleship.deploy(game._id, options)
+        const result = await battleship.attack(game._id, { row: 1, column: 1 })
+        expect(result).eql('Miss')
+        const attackedGame = await battleship.getGameInfo(game._id)
+        expect(attackedGame.attacker.missGrids.includes(1)).ok
+      })
+  
+      it('should return `Hit` and save to hitGrids', async () => {
+        const game = await battleship.createGame()
+        const options = {
+          row: 1,
+          column: 1,
+          ship: 'battleship'
+        }
+        await battleship.deploy(game._id, options)
+        const result = await battleship.attack(game._id, { row: 1, column: 1 })
+        expect(result).eql('Hit')
+        const attackedGame = await battleship.getGameInfo(game._id)
+        expect(attackedGame.attacker.hitGrids)
+      })
     })
   })
 })
