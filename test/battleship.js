@@ -3,7 +3,7 @@ const expect = require('chai').expect
 const app = require('../app')
 const battleship = require('../repositories/battleship')
 
-
+//todo add more scenario for test
 describe('Battleship lib', () => {
   describe('#createGame()', () => {
     it('should return game info', async () => {

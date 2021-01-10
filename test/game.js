@@ -6,6 +6,7 @@ const Constants = require("../constants");
 const Game = require("../models/game");
 const History = require("../models/history");
 
+//todo add more scenario for test
 describe("To test complete game session", () => {
   before(()=> {
     let game;
@@ -119,7 +120,7 @@ describe("To test complete game session", () => {
     expect(win).to.equal(Constants.win);
   });
   after(async ()=>{
-    Game.remove({_id: game._id}).exec();
-    History.remove({gameId: game._id}).exec();
+    Game.deleteOne({_id: game._id}).exec();
+    History.deleteMany({gameId: game._id}).exec();
   })
 });
