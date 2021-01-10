@@ -43,6 +43,7 @@ Attack ships
       "column": 4
     }'
 
-### GET /games/status/gameId    
+### GET /games/status/gameId 
 Get game status
-curl -X http://localhost:4000/game/status/:gameId
+
+    curl -X http://localhost:4000/game/status/:gameId

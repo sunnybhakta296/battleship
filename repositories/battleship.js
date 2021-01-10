@@ -250,6 +250,6 @@ module.exports = battleship = {
       result
     });
 
-    return Promise.resolve(message);
+    return Promise.resolve({message, result});
   },
 };
